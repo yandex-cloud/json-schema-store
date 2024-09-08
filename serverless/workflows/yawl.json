@@ -1,0 +1,1237 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/Workflow",
+    "definitions": {
+        "Workflow": {
+            "required": [
+                "yawl",
+                "start",
+                "steps"
+            ],
+            "properties": {
+                "yawl": {
+                    "type": "string"
+                },
+                "start": {
+                    "type": "string"
+                },
+                "defaultRetryPolicy": {
+                    "$ref": "#/definitions/yawl.RetryPolicy",
+                    "additionalProperties": false
+                },
+                "steps": {
+                    "additionalProperties": {
+                        "$ref": "#/definitions/yawl.Step",
+                        "additionalProperties": false
+                    },
+                    "type": "object"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "title": "Workflow"
+        },
+        "yawl.Branch": {
+            "required": [
+                "start",
+                "steps"
+            ],
+            "properties": {
+                "start": {
+                    "type": "string"
+                },
+                "steps": {
+                    "additionalProperties": {
+                        "$ref": "#/definitions/yawl.Step",
+                        "additionalProperties": false
+                    },
+                    "type": "object"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "title": "Branch"
+        },
+        "yawl.Choice": {
+            "required": [
+                "condition",
+                "next"
+            ],
+            "properties": {
+                "condition": {
+                    "type": "string"
+                },
+                "next": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "title": "Choice"
+        },
+        "yawl.ContainerCall": {
+            "required": [
+                "containerId",
+                "headers",
+                "query"
+            ],
+            "properties": {
+                "input": {
+                    "type": "string"
+                },
+                "output": {
+                    "type": "string"
+                },
+                "next": {
+                    "type": "string"
+                },
+                "timeout": {
+                    "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+                    "type": "string",
+                    "format": "regex"
+                },
+                "retryPolicy": {
+                    "$ref": "#/definitions/yawl.RetryPolicy",
+                    "additionalProperties": false
+                },
+                "containerId": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "method": {
+                    "enum": [
+                        "UNSPECIFIED",
+                        "OPTIONS",
+                        "GET",
+                        "HEAD",
+                        "POST",
+                        "PUT",
+                        "PATCH",
+                        "DELETE",
+                        "TRACE",
+                        "CONNECT"
+                    ],
+                    "type": "string",
+                    "title": "HTTP Method"
+                },
+                "body": {
+                    "type": "string"
+                },
+                "headers": {
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "type": "object"
+                },
+                "query": {
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "type": "object"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "title": "Container Call"
+        },
+        "yawl.Default": {
+            "required": [
+                "next"
+            ],
+            "properties": {
+                "next": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "title": "Default"
+        },
+        "yawl.Fail": {
+            "required": [
+                "errorMessage"
+            ],
+            "properties": {
+                "errorMessage": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "title": "Fail"
+        },
+        "yawl.Foreach": {
+            "required": [
+                "do"
+            ],
+            "properties": {
+                "input": {
+                    "type": "string"
+                },
+                "output": {
+                    "type": "string"
+                },
+                "do": {
+                    "$ref": "#/definitions/yawl.ForeachDo",
+                    "additionalProperties": false
+                },
+                "next": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "title": "Foreach"
+        },
+        "yawl.ForeachDo": {
+            "required": [
+                "start",
+                "steps"
+            ],
+            "properties": {
+                "start": {
+                    "type": "string"
+                },
+                "steps": {
+                    "additionalProperties": {
+                        "$ref": "#/definitions/yawl.Step",
+                        "additionalProperties": false
+                    },
+                    "type": "object"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "title": "Foreach Do"
+        },
+        "yawl.FoundationModelsCall": {
+            "required": [
+                "modelUrl"
+            ],
+            "properties": {
+                "input": {
+                    "type": "string"
+                },
+                "output": {
+                    "type": "string"
+                },
+                "next": {
+                    "type": "string"
+                },
+                "timeout": {
+                    "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+                    "type": "string",
+                    "format": "regex"
+                },
+                "retryPolicy": {
+                    "$ref": "#/definitions/yawl.RetryPolicy",
+                    "additionalProperties": false
+                },
+                "modelUrl": {
+                    "type": "string"
+                },
+                "generate": {
+                    "$ref": "#/definitions/yawl.FoundationModelsGenerate",
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "allOf": [
+                {
+                    "oneOf": [
+                        {
+                            "not": {
+                                "anyOf": [
+                                    {
+                                        "required": [
+                                            "generate"
+                                        ]
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "required": [
+                                "generate"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "title": "Foundation Models Call"
+        },
+        "yawl.FoundationModelsGenerate": {
+            "required": [
+                "temperature",
+                "maxTokens"
+            ],
+            "properties": {
+                "temperature": {
+                    "type": "number"
+                },
+                "maxTokens": {
+                    "type": "string"
+                },
+                "json": {
+                    "type": "string"
+                },
+                "messages": {
+                    "$ref": "#/definitions/yawl.FoundationModelsGenerate.Messages",
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "allOf": [
+                {
+                    "oneOf": [
+                        {
+                            "not": {
+                                "anyOf": [
+                                    {
+                                        "required": [
+                                            "json"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "messages"
+                                        ]
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "required": [
+                                "json"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "messages"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "title": "Foundation Models Generate"
+        },
+        "yawl.FoundationModelsGenerate.Message": {
+            "required": [
+                "role",
+                "text"
+            ],
+            "properties": {
+                "role": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "title": "Message"
+        },
+        "yawl.FoundationModelsGenerate.Messages": {
+            "required": [
+                "messages"
+            ],
+            "properties": {
+                "messages": {
+                    "items": {
+                        "$ref": "#/definitions/yawl.FoundationModelsGenerate.Message"
+                    },
+                    "additionalProperties": false,
+                    "type": "array"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "title": "Messages"
+        },
+        "yawl.FunctionCall": {
+            "required": [
+                "functionId"
+            ],
+            "properties": {
+                "input": {
+                    "type": "string"
+                },
+                "output": {
+                    "type": "string"
+                },
+                "next": {
+                    "type": "string"
+                },
+                "timeout": {
+                    "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+                    "type": "string",
+                    "format": "regex"
+                },
+                "retryPolicy": {
+                    "$ref": "#/definitions/yawl.RetryPolicy",
+                    "additionalProperties": false
+                },
+                "functionId": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "title": "Function Call"
+        },
+        "yawl.GRPCCall": {
+            "required": [
+                "endpoint",
+                "method",
+                "headers"
+            ],
+            "properties": {
+                "input": {
+                    "type": "string"
+                },
+                "output": {
+                    "type": "string"
+                },
+                "next": {
+                    "type": "string"
+                },
+                "timeout": {
+                    "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+                    "type": "string",
+                    "format": "regex"
+                },
+                "retryPolicy": {
+                    "$ref": "#/definitions/yawl.RetryPolicy",
+                    "additionalProperties": false
+                },
+                "endpoint": {
+                    "type": "string"
+                },
+                "method": {
+                    "type": "string"
+                },
+                "useServiceAccount": {
+                    "type": "boolean"
+                },
+                "body": {
+                    "type": "string"
+                },
+                "headers": {
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "type": "object"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "title": "GRPC Call"
+        },
+        "yawl.HTTPCall": {
+            "required": [
+                "url",
+                "method",
+                "headers",
+                "query"
+            ],
+            "properties": {
+                "input": {
+                    "type": "string"
+                },
+                "output": {
+                    "type": "string"
+                },
+                "next": {
+                    "type": "string"
+                },
+                "timeout": {
+                    "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+                    "type": "string",
+                    "format": "regex"
+                },
+                "retryPolicy": {
+                    "$ref": "#/definitions/yawl.RetryPolicy",
+                    "additionalProperties": false
+                },
+                "url": {
+                    "type": "string"
+                },
+                "method": {
+                    "enum": [
+                        "UNSPECIFIED",
+                        "OPTIONS",
+                        "GET",
+                        "HEAD",
+                        "POST",
+                        "PUT",
+                        "PATCH",
+                        "DELETE",
+                        "TRACE",
+                        "CONNECT"
+                    ],
+                    "type": "string",
+                    "title": "HTTP Method"
+                },
+                "body": {
+                    "type": "string"
+                },
+                "headers": {
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "type": "object"
+                },
+                "query": {
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "type": "object"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "title": "HTTP Call"
+        },
+        "yawl.NoOp": {
+            "required": [
+                "output",
+                "next"
+            ],
+            "properties": {
+                "output": {
+                    "type": "string"
+                },
+                "next": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "title": "No Op"
+        },
+        "yawl.Parallel": {
+            "required": [
+                "branches"
+            ],
+            "properties": {
+                "input": {
+                    "type": "string"
+                },
+                "output": {
+                    "type": "string"
+                },
+                "branches": {
+                    "additionalProperties": {
+                        "$ref": "#/definitions/yawl.Branch",
+                        "additionalProperties": false
+                    },
+                    "type": "object"
+                },
+                "next": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "title": "Parallel"
+        },
+        "yawl.RetryPolicy": {
+            "required": [
+                "errorList"
+            ],
+            "properties": {
+                "errorList": {
+                    "items": {
+                        "enum": [
+                            "UNSPECIFIED",
+                            "ALL",
+                            "STEP_DATA_LIMIT_EXCEEDED",
+                            "STEP_NO_CHOICE_MATCHED",
+                            "STEP_PERMISSION_DENIED",
+                            "STEP_TIMEOUT",
+                            "STEP_INVALID_OUTPUT",
+                            "STEP_INTERNAL",
+                            "STEP_INVALID_TEMPLATE_EXPRESSION",
+                            "STEP_FAIL",
+                            "STEP_INVALID_ARGUMENT",
+                            "STEP_QUOTA_EXCEEDED",
+                            "HTTP_CALL_400",
+                            "HTTP_CALL_401",
+                            "HTTP_CALL_402",
+                            "HTTP_CALL_403",
+                            "HTTP_CALL_404",
+                            "HTTP_CALL_405",
+                            "HTTP_CALL_406",
+                            "HTTP_CALL_407",
+                            "HTTP_CALL_408",
+                            "HTTP_CALL_409",
+                            "HTTP_CALL_410",
+                            "HTTP_CALL_411",
+                            "HTTP_CALL_412",
+                            "HTTP_CALL_413",
+                            "HTTP_CALL_414",
+                            "HTTP_CALL_415",
+                            "HTTP_CALL_416",
+                            "HTTP_CALL_417",
+                            "HTTP_CALL_418",
+                            "HTTP_CALL_419",
+                            "HTTP_CALL_420",
+                            "HTTP_CALL_421",
+                            "HTTP_CALL_422",
+                            "HTTP_CALL_423",
+                            "HTTP_CALL_424",
+                            "HTTP_CALL_425",
+                            "HTTP_CALL_426",
+                            "HTTP_CALL_427",
+                            "HTTP_CALL_428",
+                            "HTTP_CALL_429",
+                            "HTTP_CALL_431",
+                            "HTTP_CALL_449",
+                            "HTTP_CALL_451",
+                            "HTTP_CALL_499",
+                            "HTTP_CALL_500",
+                            "HTTP_CALL_501",
+                            "HTTP_CALL_505",
+                            "HTTP_CALL_502",
+                            "HTTP_CALL_503",
+                            "HTTP_CALL_504",
+                            "HTTP_CALL_506",
+                            "HTTP_CALL_507",
+                            "HTTP_CALL_508",
+                            "HTTP_CALL_509",
+                            "HTTP_CALL_510",
+                            "HTTP_CALL_511",
+                            "HTTP_CALL_520",
+                            "HTTP_CALL_521",
+                            "HTTP_CALL_522",
+                            "HTTP_CALL_523",
+                            "HTTP_CALL_524",
+                            "HTTP_CALL_525",
+                            "HTTP_CALL_526",
+                            "GRPC_CALL_CANCELLED",
+                            "GRPC_CALL_DEADLINE_EXCEEDED",
+                            "GRPC_CALL_UNIMPLEMENTED",
+                            "GRPC_CALL_UNAVAILABLE",
+                            "GRPC_CALL_UNKNOWN",
+                            "GRPC_CALL_INTERNAL",
+                            "GRPC_CALL_RESOURCE_EXHAUSTED",
+                            "GRPC_CALL_UNAUTHENTICATED",
+                            "GRPC_CALL_INVALID_OPTIONS",
+                            "GRPC_CALL_INVALID_REFLECTION_SERVER_RESPONSE",
+                            "CONTAINER_CALL_400",
+                            "CONTAINER_CALL_401",
+                            "CONTAINER_CALL_402",
+                            "CONTAINER_CALL_403",
+                            "CONTAINER_CALL_404",
+                            "CONTAINER_CALL_405",
+                            "CONTAINER_CALL_406",
+                            "CONTAINER_CALL_407",
+                            "CONTAINER_CALL_408",
+                            "CONTAINER_CALL_409",
+                            "CONTAINER_CALL_410",
+                            "CONTAINER_CALL_411",
+                            "CONTAINER_CALL_412",
+                            "CONTAINER_CALL_413",
+                            "CONTAINER_CALL_414",
+                            "CONTAINER_CALL_415",
+                            "CONTAINER_CALL_416",
+                            "CONTAINER_CALL_417",
+                            "CONTAINER_CALL_418",
+                            "CONTAINER_CALL_419",
+                            "CONTAINER_CALL_420",
+                            "CONTAINER_CALL_421",
+                            "CONTAINER_CALL_422",
+                            "CONTAINER_CALL_423",
+                            "CONTAINER_CALL_424",
+                            "CONTAINER_CALL_425",
+                            "CONTAINER_CALL_426",
+                            "CONTAINER_CALL_427",
+                            "CONTAINER_CALL_428",
+                            "CONTAINER_CALL_429",
+                            "CONTAINER_CALL_431",
+                            "CONTAINER_CALL_449",
+                            "CONTAINER_CALL_451",
+                            "CONTAINER_CALL_499",
+                            "CONTAINER_CALL_500",
+                            "CONTAINER_CALL_501",
+                            "CONTAINER_CALL_505",
+                            "CONTAINER_CALL_502",
+                            "CONTAINER_CALL_503",
+                            "CONTAINER_CALL_504",
+                            "CONTAINER_CALL_506",
+                            "CONTAINER_CALL_507",
+                            "CONTAINER_CALL_508",
+                            "CONTAINER_CALL_509",
+                            "CONTAINER_CALL_510",
+                            "CONTAINER_CALL_511",
+                            "CONTAINER_CALL_520",
+                            "CONTAINER_CALL_521",
+                            "CONTAINER_CALL_522",
+                            "CONTAINER_CALL_523",
+                            "CONTAINER_CALL_524",
+                            "CONTAINER_CALL_525",
+                            "CONTAINER_CALL_526",
+                            "YDB_CALL_THROTTLING_ERROR",
+                            "YDB_CALL_REQUEST_EXPIRED",
+                            "YDB_CALL_NOT_AUTHORIZED",
+                            "YDB_CALL_SERVICE_UNAVAILABLE"
+                        ]
+                    },
+                    "type": "array",
+                    "title": "Workflow Error"
+                },
+                "errorListMode": {
+                    "enum": [
+                        "UNSPECIFIED",
+                        "INCLUDE",
+                        "EXCLUDE"
+                    ],
+                    "type": "string",
+                    "title": "Mode"
+                },
+                "initialDelay": {
+                    "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+                    "type": "string",
+                    "format": "regex"
+                },
+                "maxDelay": {
+                    "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+                    "type": "string",
+                    "format": "regex"
+                },
+                "retryCount": {
+                    "type": "integer"
+                },
+                "backoffRate": {
+                    "type": "number"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "title": "Retry Policy"
+        },
+        "yawl.Step": {
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "switch": {
+                    "$ref": "#/definitions/yawl.Switch",
+                    "additionalProperties": false
+                },
+                "foreach": {
+                    "$ref": "#/definitions/yawl.Foreach",
+                    "additionalProperties": false
+                },
+                "parallel": {
+                    "$ref": "#/definitions/yawl.Parallel",
+                    "additionalProperties": false
+                },
+                "success": {
+                    "$ref": "#/definitions/yawl.Success",
+                    "additionalProperties": false
+                },
+                "fail": {
+                    "$ref": "#/definitions/yawl.Fail",
+                    "additionalProperties": false
+                },
+                "noOp": {
+                    "$ref": "#/definitions/yawl.NoOp",
+                    "additionalProperties": false
+                },
+                "functionCall": {
+                    "$ref": "#/definitions/yawl.FunctionCall",
+                    "additionalProperties": false
+                },
+                "containerCall": {
+                    "$ref": "#/definitions/yawl.ContainerCall",
+                    "additionalProperties": false
+                },
+                "httpCall": {
+                    "$ref": "#/definitions/yawl.HTTPCall",
+                    "additionalProperties": false
+                },
+                "grpcCall": {
+                    "$ref": "#/definitions/yawl.GRPCCall",
+                    "additionalProperties": false
+                },
+                "ydbDocument": {
+                    "$ref": "#/definitions/yawl.YDBDocument",
+                    "additionalProperties": false
+                },
+                "yds": {
+                    "$ref": "#/definitions/yawl.YDS",
+                    "additionalProperties": false
+                },
+                "ymq": {
+                    "$ref": "#/definitions/yawl.YMQ",
+                    "additionalProperties": false
+                },
+                "foundationModelsCall": {
+                    "$ref": "#/definitions/yawl.FoundationModelsCall",
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "allOf": [
+                {
+                    "oneOf": [
+                        {
+                            "not": {
+                                "anyOf": [
+                                    {
+                                        "required": [
+                                            "switch"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "foreach"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "parallel"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "success"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "fail"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "noOp"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "functionCall"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "containerCall"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "httpCall"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "grpcCall"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "ydbDocument"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "yds"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "ymq"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "foundationModelsCall"
+                                        ]
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "required": [
+                                "switch"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "foreach"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "parallel"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "success"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "fail"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "noOp"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "functionCall"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "containerCall"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "httpCall"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "grpcCall"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "ydbDocument"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "yds"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "ymq"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "foundationModelsCall"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "title": "Step"
+        },
+        "yawl.Success": {
+            "additionalProperties": false,
+            "type": "object",
+            "title": "Success"
+        },
+        "yawl.Switch": {
+            "required": [
+                "choices"
+            ],
+            "properties": {
+                "input": {
+                    "type": "string"
+                },
+                "choices": {
+                    "items": {
+                        "$ref": "#/definitions/yawl.Choice"
+                    },
+                    "additionalProperties": false,
+                    "type": "array"
+                },
+                "default": {
+                    "$ref": "#/definitions/yawl.Default",
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "title": "Switch"
+        },
+        "yawl.YDBDocument": {
+            "required": [
+                "database",
+                "tableName"
+            ],
+            "properties": {
+                "input": {
+                    "type": "string"
+                },
+                "output": {
+                    "type": "string"
+                },
+                "next": {
+                    "type": "string"
+                },
+                "timeout": {
+                    "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+                    "type": "string",
+                    "format": "regex"
+                },
+                "retryPolicy": {
+                    "$ref": "#/definitions/yawl.RetryPolicy",
+                    "additionalProperties": false
+                },
+                "database": {
+                    "type": "string"
+                },
+                "tableName": {
+                    "type": "string"
+                },
+                "get": {
+                    "$ref": "#/definitions/yawl.YDBDocumentGet",
+                    "additionalProperties": false
+                },
+                "put": {
+                    "$ref": "#/definitions/yawl.YDBDocumentPut",
+                    "additionalProperties": false
+                },
+                "update": {
+                    "$ref": "#/definitions/yawl.YDBDocumentUpdate",
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "allOf": [
+                {
+                    "oneOf": [
+                        {
+                            "not": {
+                                "anyOf": [
+                                    {
+                                        "required": [
+                                            "get"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "put"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "update"
+                                        ]
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "required": [
+                                "get"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "put"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "update"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "title": "YDB Document"
+        },
+        "yawl.YDBDocumentGet": {
+            "required": [
+                "key"
+            ],
+            "properties": {
+                "key": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "title": "YDB Document Get"
+        },
+        "yawl.YDBDocumentPut": {
+            "required": [
+                "item"
+            ],
+            "properties": {
+                "item": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "title": "YDB Document Put"
+        },
+        "yawl.YDBDocumentUpdate": {
+            "required": [
+                "key",
+                "expression"
+            ],
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "expression": {
+                    "type": "string"
+                },
+                "expressionAttributeValues": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "title": "YDB Document Update"
+        },
+        "yawl.YDS": {
+            "required": [
+                "streamName",
+                "partitionKey"
+            ],
+            "properties": {
+                "input": {
+                    "type": "string"
+                },
+                "output": {
+                    "type": "string"
+                },
+                "next": {
+                    "type": "string"
+                },
+                "timeout": {
+                    "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+                    "type": "string",
+                    "format": "regex"
+                },
+                "retryPolicy": {
+                    "$ref": "#/definitions/yawl.RetryPolicy",
+                    "additionalProperties": false
+                },
+                "streamName": {
+                    "type": "string"
+                },
+                "partitionKey": {
+                    "type": "string"
+                },
+                "put": {
+                    "$ref": "#/definitions/yawl.YDSPut",
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "allOf": [
+                {
+                    "oneOf": [
+                        {
+                            "not": {
+                                "anyOf": [
+                                    {
+                                        "required": [
+                                            "put"
+                                        ]
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "required": [
+                                "put"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "title": "YDS"
+        },
+        "yawl.YDSPut": {
+            "additionalProperties": false,
+            "type": "object",
+            "title": "YDS Put"
+        },
+        "yawl.YMQ": {
+            "required": [
+                "queueArn"
+            ],
+            "properties": {
+                "input": {
+                    "type": "string"
+                },
+                "output": {
+                    "type": "string"
+                },
+                "next": {
+                    "type": "string"
+                },
+                "timeout": {
+                    "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+                    "type": "string",
+                    "format": "regex"
+                },
+                "retryPolicy": {
+                    "$ref": "#/definitions/yawl.RetryPolicy",
+                    "additionalProperties": false
+                },
+                "queueArn": {
+                    "type": "string"
+                },
+                "put": {
+                    "$ref": "#/definitions/yawl.YMQPut",
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "allOf": [
+                {
+                    "oneOf": [
+                        {
+                            "not": {
+                                "anyOf": [
+                                    {
+                                        "required": [
+                                            "put"
+                                        ]
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "required": [
+                                "put"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "title": "YMQ"
+        },
+        "yawl.YMQPut": {
+            "properties": {
+                "body": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "title": "YMQ Put"
+        }
+    }
+}
