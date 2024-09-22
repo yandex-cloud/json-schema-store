@@ -164,6 +164,8 @@
         },
         "yawl.Foreach": {
             "required": [
+                "input",
+                "output",
                 "do"
             ],
             "properties": {
@@ -514,6 +516,99 @@
             "type": "object",
             "title": "No Op"
         },
+        "yawl.ObjectStorage": {
+            "required": [
+                "bucket",
+                "object"
+            ],
+            "properties": {
+                "input": {
+                    "type": "string"
+                },
+                "output": {
+                    "type": "string"
+                },
+                "next": {
+                    "type": "string"
+                },
+                "timeout": {
+                    "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+                    "type": "string",
+                    "format": "regex"
+                },
+                "retryPolicy": {
+                    "$ref": "#/definitions/yawl.RetryPolicy",
+                    "additionalProperties": false
+                },
+                "bucket": {
+                    "type": "string"
+                },
+                "object": {
+                    "type": "string"
+                },
+                "put": {
+                    "$ref": "#/definitions/yawl.ObjectStoragePut",
+                    "additionalProperties": false
+                },
+                "get": {
+                    "$ref": "#/definitions/yawl.ObjectStorageGet",
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "allOf": [
+                {
+                    "oneOf": [
+                        {
+                            "not": {
+                                "anyOf": [
+                                    {
+                                        "required": [
+                                            "put"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "get"
+                                        ]
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "required": [
+                                "put"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "get"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "title": "Object Storage"
+        },
+        "yawl.ObjectStorageGet": {
+            "additionalProperties": false,
+            "type": "object",
+            "title": "Object Storage Get"
+        },
+        "yawl.ObjectStoragePut": {
+            "required": [
+                "content"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "type": "object",
+            "title": "Object Storage Put"
+        },
         "yawl.Parallel": {
             "required": [
                 "branches"
@@ -623,6 +718,7 @@
                             "GRPC_CALL_UNAUTHENTICATED",
                             "GRPC_CALL_INVALID_OPTIONS",
                             "GRPC_CALL_INVALID_REFLECTION_SERVER_RESPONSE",
+                            "FUNCTION_CALL_INVALID_RESPONSE",
                             "CONTAINER_CALL_400",
                             "CONTAINER_CALL_401",
                             "CONTAINER_CALL_402",
@@ -676,9 +772,6 @@
                             "CONTAINER_CALL_524",
                             "CONTAINER_CALL_525",
                             "CONTAINER_CALL_526",
-                            "YDB_CALL_THROTTLING_ERROR",
-                            "YDB_CALL_REQUEST_EXPIRED",
-                            "YDB_CALL_NOT_AUTHORIZED",
                             "YDB_CALL_SERVICE_UNAVAILABLE"
                         ]
                     },
@@ -778,6 +871,10 @@
                 "foundationModelsCall": {
                     "$ref": "#/definitions/yawl.FoundationModelsCall",
                     "additionalProperties": false
+                },
+                "objectStorage": {
+                    "$ref": "#/definitions/yawl.ObjectStorage",
+                    "additionalProperties": false
                 }
             },
             "additionalProperties": false,
@@ -857,6 +954,11 @@
                                         "required": [
                                             "foundationModelsCall"
                                         ]
+                                    },
+                                    {
+                                        "required": [
+                                            "objectStorage"
+                                        ]
                                     }
                                 ]
                             }
@@ -929,6 +1031,11 @@
                         {
                             "required": [
                                 "foundationModelsCall"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "objectStorage"
                             ]
                         }
                     ]
@@ -1102,8 +1209,8 @@
         },
         "yawl.YDS": {
             "required": [
-                "streamName",
-                "partitionKey"
+                "database",
+                "topic"
             ],
             "properties": {
                 "input": {
@@ -1124,10 +1231,10 @@
                     "$ref": "#/definitions/yawl.RetryPolicy",
                     "additionalProperties": false
                 },
-                "streamName": {
+                "database": {
                     "type": "string"
                 },
-                "partitionKey": {
+                "topic": {
                     "type": "string"
                 },
                 "put": {
@@ -1162,6 +1269,14 @@
             "title": "YDS"
         },
         "yawl.YDSPut": {
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "partitionKey": {
+                    "type": "string"
+                }
+            },
             "additionalProperties": false,
             "type": "object",
             "title": "YDS Put"
