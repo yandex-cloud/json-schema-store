@@ -10,7 +10,8 @@
             ],
             "properties": {
                 "yawl": {
-                    "type": "string"
+                    "type": "string",
+                    "pattern": "^0.1$"
                 },
                 "start": {
                     "type": "string"
@@ -24,7 +25,8 @@
                         "$ref": "#/definitions/yawl.Step",
                         "additionalProperties": false
                     },
-                    "type": "object"
+                    "type": "object",
+                    "minProperties": 1
                 }
             },
             "additionalProperties": false,
@@ -45,7 +47,8 @@
                         "$ref": "#/definitions/yawl.Step",
                         "additionalProperties": false
                     },
-                    "type": "object"
+                    "type": "object",
+                    "minProperties": 1
                 }
             },
             "additionalProperties": false,
@@ -71,9 +74,7 @@
         },
         "yawl.ContainerCall": {
             "required": [
-                "containerId",
-                "headers",
-                "query"
+                "containerId"
             ],
             "properties": {
                 "input": {
@@ -102,7 +103,6 @@
                 },
                 "method": {
                     "enum": [
-                        "UNSPECIFIED",
                         "OPTIONS",
                         "GET",
                         "HEAD",
@@ -201,7 +201,8 @@
                         "$ref": "#/definitions/yawl.Step",
                         "additionalProperties": false
                     },
-                    "type": "object"
+                    "type": "object",
+                    "minProperties": 1
                 }
             },
             "additionalProperties": false,
@@ -241,25 +242,10 @@
             },
             "additionalProperties": false,
             "type": "object",
-            "allOf": [
+            "oneOf": [
                 {
-                    "oneOf": [
-                        {
-                            "not": {
-                                "anyOf": [
-                                    {
-                                        "required": [
-                                            "generate"
-                                        ]
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "required": [
-                                "generate"
-                            ]
-                        }
+                    "required": [
+                        "generate"
                     ]
                 }
             ],
@@ -275,7 +261,7 @@
                     "type": "number"
                 },
                 "maxTokens": {
-                    "type": "string"
+                    "type": "number"
                 },
                 "json": {
                     "type": "string"
@@ -287,35 +273,15 @@
             },
             "additionalProperties": false,
             "type": "object",
-            "allOf": [
+            "oneOf": [
                 {
-                    "oneOf": [
-                        {
-                            "not": {
-                                "anyOf": [
-                                    {
-                                        "required": [
-                                            "json"
-                                        ]
-                                    },
-                                    {
-                                        "required": [
-                                            "messages"
-                                        ]
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "required": [
-                                "json"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "messages"
-                            ]
-                        }
+                    "required": [
+                        "json"
+                    ]
+                },
+                {
+                    "required": [
+                        "messages"
                     ]
                 }
             ],
@@ -348,7 +314,8 @@
                         "$ref": "#/definitions/yawl.FoundationModelsGenerate.Message"
                     },
                     "additionalProperties": false,
-                    "type": "array"
+                    "type": "array",
+                    "minItems": 1
                 }
             },
             "additionalProperties": false,
@@ -389,8 +356,7 @@
         "yawl.GRPCCall": {
             "required": [
                 "endpoint",
-                "method",
-                "headers"
+                "method"
             ],
             "properties": {
                 "input": {
@@ -436,10 +402,7 @@
         },
         "yawl.HTTPCall": {
             "required": [
-                "url",
-                "method",
-                "headers",
-                "query"
+                "url"
             ],
             "properties": {
                 "input": {
@@ -465,7 +428,6 @@
                 },
                 "method": {
                     "enum": [
-                        "UNSPECIFIED",
                         "OPTIONS",
                         "GET",
                         "HEAD",
@@ -557,35 +519,15 @@
             },
             "additionalProperties": false,
             "type": "object",
-            "allOf": [
+            "oneOf": [
                 {
-                    "oneOf": [
-                        {
-                            "not": {
-                                "anyOf": [
-                                    {
-                                        "required": [
-                                            "put"
-                                        ]
-                                    },
-                                    {
-                                        "required": [
-                                            "get"
-                                        ]
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "required": [
-                                "put"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "get"
-                            ]
-                        }
+                    "required": [
+                        "put"
+                    ]
+                },
+                {
+                    "required": [
+                        "get"
                     ]
                 }
             ],
@@ -625,7 +567,8 @@
                         "$ref": "#/definitions/yawl.Branch",
                         "additionalProperties": false
                     },
-                    "type": "object"
+                    "type": "object",
+                    "minProperties": 1
                 },
                 "next": {
                     "type": "string"
@@ -643,7 +586,6 @@
                 "errorList": {
                     "items": {
                         "enum": [
-                            "UNSPECIFIED",
                             "ALL",
                             "STEP_DATA_LIMIT_EXCEEDED",
                             "STEP_NO_CHOICE_MATCHED",
@@ -780,7 +722,6 @@
                 },
                 "errorListMode": {
                     "enum": [
-                        "UNSPECIFIED",
                         "INCLUDE",
                         "EXCLUDE"
                     ],
@@ -879,165 +820,80 @@
             },
             "additionalProperties": false,
             "type": "object",
-            "allOf": [
+            "oneOf": [
                 {
-                    "oneOf": [
-                        {
-                            "not": {
-                                "anyOf": [
-                                    {
-                                        "required": [
-                                            "switch"
-                                        ]
-                                    },
-                                    {
-                                        "required": [
-                                            "foreach"
-                                        ]
-                                    },
-                                    {
-                                        "required": [
-                                            "parallel"
-                                        ]
-                                    },
-                                    {
-                                        "required": [
-                                            "success"
-                                        ]
-                                    },
-                                    {
-                                        "required": [
-                                            "fail"
-                                        ]
-                                    },
-                                    {
-                                        "required": [
-                                            "noOp"
-                                        ]
-                                    },
-                                    {
-                                        "required": [
-                                            "functionCall"
-                                        ]
-                                    },
-                                    {
-                                        "required": [
-                                            "containerCall"
-                                        ]
-                                    },
-                                    {
-                                        "required": [
-                                            "httpCall"
-                                        ]
-                                    },
-                                    {
-                                        "required": [
-                                            "grpcCall"
-                                        ]
-                                    },
-                                    {
-                                        "required": [
-                                            "ydbDocument"
-                                        ]
-                                    },
-                                    {
-                                        "required": [
-                                            "yds"
-                                        ]
-                                    },
-                                    {
-                                        "required": [
-                                            "ymq"
-                                        ]
-                                    },
-                                    {
-                                        "required": [
-                                            "foundationModelsCall"
-                                        ]
-                                    },
-                                    {
-                                        "required": [
-                                            "objectStorage"
-                                        ]
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "required": [
-                                "switch"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "foreach"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "parallel"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "success"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "fail"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "noOp"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "functionCall"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "containerCall"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "httpCall"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "grpcCall"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "ydbDocument"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "yds"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "ymq"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "foundationModelsCall"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "objectStorage"
-                            ]
-                        }
+                    "required": [
+                        "switch"
+                    ]
+                },
+                {
+                    "required": [
+                        "foreach"
+                    ]
+                },
+                {
+                    "required": [
+                        "parallel"
+                    ]
+                },
+                {
+                    "required": [
+                        "success"
+                    ]
+                },
+                {
+                    "required": [
+                        "fail"
+                    ]
+                },
+                {
+                    "required": [
+                        "noOp"
+                    ]
+                },
+                {
+                    "required": [
+                        "functionCall"
+                    ]
+                },
+                {
+                    "required": [
+                        "containerCall"
+                    ]
+                },
+                {
+                    "required": [
+                        "httpCall"
+                    ]
+                },
+                {
+                    "required": [
+                        "grpcCall"
+                    ]
+                },
+                {
+                    "required": [
+                        "ydbDocument"
+                    ]
+                },
+                {
+                    "required": [
+                        "yds"
+                    ]
+                },
+                {
+                    "required": [
+                        "ymq"
+                    ]
+                },
+                {
+                    "required": [
+                        "foundationModelsCall"
+                    ]
+                },
+                {
+                    "required": [
+                        "objectStorage"
                     ]
                 }
             ],
@@ -1117,45 +973,20 @@
             },
             "additionalProperties": false,
             "type": "object",
-            "allOf": [
+            "oneOf": [
                 {
-                    "oneOf": [
-                        {
-                            "not": {
-                                "anyOf": [
-                                    {
-                                        "required": [
-                                            "get"
-                                        ]
-                                    },
-                                    {
-                                        "required": [
-                                            "put"
-                                        ]
-                                    },
-                                    {
-                                        "required": [
-                                            "update"
-                                        ]
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "required": [
-                                "get"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "put"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "update"
-                            ]
-                        }
+                    "required": [
+                        "get"
+                    ]
+                },
+                {
+                    "required": [
+                        "put"
+                    ]
+                },
+                {
+                    "required": [
+                        "update"
                     ]
                 }
             ],
@@ -1244,25 +1075,10 @@
             },
             "additionalProperties": false,
             "type": "object",
-            "allOf": [
+            "oneOf": [
                 {
-                    "oneOf": [
-                        {
-                            "not": {
-                                "anyOf": [
-                                    {
-                                        "required": [
-                                            "put"
-                                        ]
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "required": [
-                                "put"
-                            ]
-                        }
+                    "required": [
+                        "put"
                     ]
                 }
             ],
@@ -1314,25 +1130,10 @@
             },
             "additionalProperties": false,
             "type": "object",
-            "allOf": [
+            "oneOf": [
                 {
-                    "oneOf": [
-                        {
-                            "not": {
-                                "anyOf": [
-                                    {
-                                        "required": [
-                                            "put"
-                                        ]
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "required": [
-                                "put"
-                            ]
-                        }
+                    "required": [
+                        "put"
                     ]
                 }
             ],
