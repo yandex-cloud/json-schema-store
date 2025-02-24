@@ -466,6 +466,9 @@
                         "type": "string"
                     },
                     "type": "object"
+                },
+                "useServiceAccount": {
+                    "type": "boolean"
                 }
             },
             "additionalProperties": false,
@@ -592,6 +595,17 @@
             "title": "Object Storage"
         },
         "yawl.ObjectStorageGet": {
+            "properties": {
+                "contentType": {
+                    "enum": [
+                        "BINARY",
+                        "JSON",
+                        "TEXT"
+                    ],
+                    "type": "string",
+                    "title": "Object Storage Content Type"
+                }
+            },
             "additionalProperties": false,
             "type": "object",
             "title": "Object Storage Get"
@@ -825,6 +839,7 @@
                     "items": {
                         "enum": [
                             "ALL",
+                            "INVALID_INPUT",
                             "STEP_DATA_LIMIT_EXCEEDED",
                             "STEP_NO_CHOICE_MATCHED",
                             "STEP_PERMISSION_DENIED",
@@ -1199,6 +1214,9 @@
             "title": "Switch"
         },
         "yawl.Tracker": {
+            "required": [
+                "oauthToken"
+            ],
             "properties": {
                 "input": {
                     "type": "string"
@@ -1223,9 +1241,6 @@
                 },
                 "oauthToken": {
                     "type": "string"
-                },
-                "serviceAccount": {
-                    "type": "boolean"
                 },
                 "organization": {
                     "$ref": "#/definitions/yawl.Organization",
@@ -1271,20 +1286,6 @@
             "additionalProperties": false,
             "type": "object",
             "allOf": [
-                {
-                    "oneOf": [
-                        {
-                            "required": [
-                                "oauthToken"
-                            ]
-                        },
-                        {
-                            "required": [
-                                "serviceAccount"
-                            ]
-                        }
-                    ]
-                },
                 {
                     "oneOf": [
                         {
