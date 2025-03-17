@@ -232,6 +232,16 @@
       "properties": {
         "content": {
           "type": "string"
+        },
+        "contentType": {
+          "enum": [
+            "BINARY",
+            "JSON",
+            "TEXT"
+          ],
+          "type": "string",
+          "title": "Storage Content Type",
+          "description": "Used for Object Storage and Yandex Disk downloads"
         }
       },
       "additionalProperties": false,
@@ -707,6 +717,16 @@
       "properties": {
         "content": {
           "type": "string"
+        },
+        "contentType": {
+          "enum": [
+            "BINARY",
+            "JSON",
+            "TEXT"
+          ],
+          "type": "string",
+          "title": "Storage Content Type",
+          "description": "Used for Object Storage and Yandex Disk downloads"
         }
       },
       "additionalProperties": false,
