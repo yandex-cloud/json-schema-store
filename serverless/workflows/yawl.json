@@ -280,6 +280,9 @@
         },
         "next": {
           "type": "string"
+        },
+        "concurrency": {
+          "type": "integer"
         }
       },
       "additionalProperties": false,
@@ -783,6 +786,9 @@
         },
         "next": {
           "type": "string"
+        },
+        "concurrency": {
+          "type": "integer"
         }
       },
       "additionalProperties": false,
