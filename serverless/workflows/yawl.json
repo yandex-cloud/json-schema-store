@@ -214,7 +214,9 @@
           "enum": [
             "BINARY",
             "JSON",
-            "TEXT"
+            "TEXT",
+            "EXCEL",
+            "CSV"
           ],
           "type": "string",
           "title": "Storage Content Type",
@@ -237,7 +239,9 @@
           "enum": [
             "BINARY",
             "JSON",
-            "TEXT"
+            "TEXT",
+            "EXCEL",
+            "CSV"
           ],
           "type": "string",
           "title": "Storage Content Type",
@@ -702,7 +706,9 @@
           "enum": [
             "BINARY",
             "JSON",
-            "TEXT"
+            "TEXT",
+            "EXCEL",
+            "CSV"
           ],
           "type": "string",
           "title": "Storage Content Type",
@@ -725,7 +731,9 @@
           "enum": [
             "BINARY",
             "JSON",
-            "TEXT"
+            "TEXT",
+            "EXCEL",
+            "CSV"
           ],
           "type": "string",
           "title": "Storage Content Type",
@@ -956,6 +964,9 @@
             "enum": [
               "ALL",
               "INVALID_INPUT",
+              "CANCELLED",
+              "TERMINATED",
+              "TIMEOUT",
               "STEP_DATA_LIMIT_EXCEEDED",
               "STEP_NO_CHOICE_MATCHED",
               "STEP_PERMISSION_DENIED",
@@ -1119,6 +1130,40 @@
       "type": "object",
       "title": "Retry Policy"
     },
+    "yawl.StartWorkflow": {
+      "required": [
+        "workflowId"
+      ],
+      "properties": {
+        "input": {
+          "type": "string"
+        },
+        "output": {
+          "type": "string"
+        },
+        "next": {
+          "type": "string"
+        },
+        "timeout": {
+          "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+          "type": "string",
+          "format": "regex"
+        },
+        "retryPolicy": {
+          "$ref": "#/definitions/yawl.RetryPolicy",
+          "additionalProperties": false
+        },
+        "workflowId": {
+          "type": "string"
+        },
+        "executionInput": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Start Workflow"
+    },
     "yawl.Step": {
       "properties": {
         "title": {
@@ -1201,6 +1246,10 @@
         },
         "disk": {
           "$ref": "#/definitions/yawl.Disk",
+          "additionalProperties": false
+        },
+        "workflow": {
+          "$ref": "#/definitions/yawl.StartWorkflow",
           "additionalProperties": false
         }
       },
@@ -1302,6 +1351,11 @@
             {
               "required": [
                 "disk"
+              ]
+            },
+            {
+              "required": [
+                "workflow"
               ]
             }
           ]
