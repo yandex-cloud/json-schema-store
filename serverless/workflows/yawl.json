@@ -33,6 +33,84 @@
       "type": "object",
       "title": "Workflow"
     },
+    "yawl.AIAgent": {
+      "required": [
+        "agentConfig",
+        "tasks"
+      ],
+      "properties": {
+        "input": {
+          "type": "string"
+        },
+        "output": {
+          "type": "string"
+        },
+        "next": {
+          "type": "string"
+        },
+        "timeout": {
+          "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+          "type": "string",
+          "format": "regex"
+        },
+        "retryPolicy": {
+          "$ref": "#/definitions/yawl.RetryPolicy",
+          "additionalProperties": false
+        },
+        "agentConfig": {
+          "$ref": "#/definitions/yawl.AIAgentConfig",
+          "additionalProperties": false
+        },
+        "tasks": {
+          "items": {
+            "$ref": "#/definitions/yawl.AIAgentTask"
+          },
+          "additionalProperties": false,
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "AI Agent"
+    },
+    "yawl.AIAgentConfig": {
+      "required": [
+        "goal",
+        "role",
+        "backstory"
+      ],
+      "properties": {
+        "goal": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "backstory": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "AI Agent Config"
+    },
+    "yawl.AIAgentTask": {
+      "required": [
+        "description",
+        "result"
+      ],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "result": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "AI Agent Task"
+    },
     "yawl.Branch": {
       "required": [
         "start",
@@ -177,6 +255,9 @@
           "type": "string"
         },
         "path": {
+          "type": "string"
+        },
+        "sharedDiskId": {
           "type": "string"
         },
         "upload": {
@@ -1251,6 +1332,10 @@
         "workflow": {
           "$ref": "#/definitions/yawl.StartWorkflow",
           "additionalProperties": false
+        },
+        "aiAgent": {
+          "$ref": "#/definitions/yawl.AIAgent",
+          "additionalProperties": false
         }
       },
       "additionalProperties": false,
@@ -1356,6 +1441,11 @@
             {
               "required": [
                 "workflow"
+              ]
+            },
+            {
+              "required": [
+                "aiAgent"
               ]
             }
           ]
