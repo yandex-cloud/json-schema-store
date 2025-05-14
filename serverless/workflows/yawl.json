@@ -67,6 +67,13 @@
           },
           "additionalProperties": false,
           "type": "array"
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
         }
       },
       "additionalProperties": false,
@@ -132,6 +139,174 @@
       "additionalProperties": false,
       "type": "object",
       "title": "Branch"
+    },
+    "yawl.CatchRule": {
+      "required": [
+        "errorList",
+        "output",
+        "next"
+      ],
+      "properties": {
+        "errorList": {
+          "items": {
+            "enum": [
+              "ALL",
+              "INVALID_INPUT",
+              "CANCELLED",
+              "TERMINATED",
+              "TIMEOUT",
+              "STEP_DATA_LIMIT_EXCEEDED",
+              "STEP_NO_CHOICE_MATCHED",
+              "STEP_PERMISSION_DENIED",
+              "STEP_TIMEOUT",
+              "STEP_INVALID_OUTPUT",
+              "STEP_INTERNAL",
+              "STEP_INVALID_TEMPLATE_EXPRESSION",
+              "STEP_FAIL",
+              "STEP_INVALID_ARGUMENT",
+              "STEP_QUOTA_EXCEEDED",
+              "STEP_FAILED_PRECONDITION",
+              "HTTP_CALL_400",
+              "HTTP_CALL_401",
+              "HTTP_CALL_402",
+              "HTTP_CALL_403",
+              "HTTP_CALL_404",
+              "HTTP_CALL_405",
+              "HTTP_CALL_406",
+              "HTTP_CALL_407",
+              "HTTP_CALL_408",
+              "HTTP_CALL_409",
+              "HTTP_CALL_410",
+              "HTTP_CALL_411",
+              "HTTP_CALL_412",
+              "HTTP_CALL_413",
+              "HTTP_CALL_414",
+              "HTTP_CALL_415",
+              "HTTP_CALL_416",
+              "HTTP_CALL_417",
+              "HTTP_CALL_418",
+              "HTTP_CALL_419",
+              "HTTP_CALL_420",
+              "HTTP_CALL_421",
+              "HTTP_CALL_422",
+              "HTTP_CALL_423",
+              "HTTP_CALL_424",
+              "HTTP_CALL_425",
+              "HTTP_CALL_426",
+              "HTTP_CALL_427",
+              "HTTP_CALL_428",
+              "HTTP_CALL_429",
+              "HTTP_CALL_431",
+              "HTTP_CALL_449",
+              "HTTP_CALL_451",
+              "HTTP_CALL_499",
+              "HTTP_CALL_500",
+              "HTTP_CALL_501",
+              "HTTP_CALL_505",
+              "HTTP_CALL_502",
+              "HTTP_CALL_503",
+              "HTTP_CALL_504",
+              "HTTP_CALL_506",
+              "HTTP_CALL_507",
+              "HTTP_CALL_508",
+              "HTTP_CALL_509",
+              "HTTP_CALL_510",
+              "HTTP_CALL_511",
+              "HTTP_CALL_520",
+              "HTTP_CALL_521",
+              "HTTP_CALL_522",
+              "HTTP_CALL_523",
+              "HTTP_CALL_524",
+              "HTTP_CALL_525",
+              "HTTP_CALL_526",
+              "GRPC_CALL_CANCELLED",
+              "GRPC_CALL_DEADLINE_EXCEEDED",
+              "GRPC_CALL_UNIMPLEMENTED",
+              "GRPC_CALL_UNAVAILABLE",
+              "GRPC_CALL_UNKNOWN",
+              "GRPC_CALL_INTERNAL",
+              "GRPC_CALL_RESOURCE_EXHAUSTED",
+              "GRPC_CALL_UNAUTHENTICATED",
+              "GRPC_CALL_INVALID_OPTIONS",
+              "GRPC_CALL_INVALID_REFLECTION_SERVER_RESPONSE",
+              "FUNCTION_CALL_INVALID_RESPONSE",
+              "CONTAINER_CALL_400",
+              "CONTAINER_CALL_401",
+              "CONTAINER_CALL_402",
+              "CONTAINER_CALL_403",
+              "CONTAINER_CALL_404",
+              "CONTAINER_CALL_405",
+              "CONTAINER_CALL_406",
+              "CONTAINER_CALL_407",
+              "CONTAINER_CALL_408",
+              "CONTAINER_CALL_409",
+              "CONTAINER_CALL_410",
+              "CONTAINER_CALL_411",
+              "CONTAINER_CALL_412",
+              "CONTAINER_CALL_413",
+              "CONTAINER_CALL_414",
+              "CONTAINER_CALL_415",
+              "CONTAINER_CALL_416",
+              "CONTAINER_CALL_417",
+              "CONTAINER_CALL_418",
+              "CONTAINER_CALL_419",
+              "CONTAINER_CALL_420",
+              "CONTAINER_CALL_421",
+              "CONTAINER_CALL_422",
+              "CONTAINER_CALL_423",
+              "CONTAINER_CALL_424",
+              "CONTAINER_CALL_425",
+              "CONTAINER_CALL_426",
+              "CONTAINER_CALL_427",
+              "CONTAINER_CALL_428",
+              "CONTAINER_CALL_429",
+              "CONTAINER_CALL_431",
+              "CONTAINER_CALL_449",
+              "CONTAINER_CALL_451",
+              "CONTAINER_CALL_499",
+              "CONTAINER_CALL_500",
+              "CONTAINER_CALL_501",
+              "CONTAINER_CALL_505",
+              "CONTAINER_CALL_502",
+              "CONTAINER_CALL_503",
+              "CONTAINER_CALL_504",
+              "CONTAINER_CALL_506",
+              "CONTAINER_CALL_507",
+              "CONTAINER_CALL_508",
+              "CONTAINER_CALL_509",
+              "CONTAINER_CALL_510",
+              "CONTAINER_CALL_511",
+              "CONTAINER_CALL_520",
+              "CONTAINER_CALL_521",
+              "CONTAINER_CALL_522",
+              "CONTAINER_CALL_523",
+              "CONTAINER_CALL_524",
+              "CONTAINER_CALL_525",
+              "CONTAINER_CALL_526",
+              "YDB_CALL_SERVICE_UNAVAILABLE"
+            ]
+          },
+          "type": "array",
+          "title": "Workflow Error"
+        },
+        "errorListMode": {
+          "enum": [
+            "INCLUDE",
+            "EXCLUDE"
+          ],
+          "type": "string",
+          "title": "Mode"
+        },
+        "output": {
+          "type": "string"
+        },
+        "next": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Catch Rule"
     },
     "yawl.Choice": {
       "required": [
@@ -208,6 +383,13 @@
             "type": "string"
           },
           "type": "object"
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
         }
       },
       "additionalProperties": false,
@@ -267,6 +449,13 @@
         "download": {
           "$ref": "#/definitions/yawl.DiskDownload",
           "additionalProperties": false
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
         }
       },
       "additionalProperties": false,
@@ -425,6 +614,13 @@
         "generate": {
           "$ref": "#/definitions/yawl.FoundationModelsGenerate",
           "additionalProperties": false
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
         }
       },
       "additionalProperties": false,
@@ -545,6 +741,13 @@
         },
         "tag": {
           "type": "string"
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
         }
       },
       "additionalProperties": false,
@@ -592,6 +795,13 @@
             "type": "string"
           },
           "type": "object"
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
         }
       },
       "additionalProperties": false,
@@ -656,6 +866,13 @@
         },
         "useServiceAccount": {
           "type": "boolean"
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
         }
       },
       "additionalProperties": false,
@@ -759,6 +976,13 @@
         "get": {
           "$ref": "#/definitions/yawl.ObjectStorageGet",
           "additionalProperties": false
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
         }
       },
       "additionalProperties": false,
@@ -922,6 +1146,13 @@
         "raw": {
           "$ref": "#/definitions/yawl.PostboxRawMessage",
           "additionalProperties": false
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
         }
       },
       "additionalProperties": false,
@@ -1239,6 +1470,13 @@
         },
         "executionInput": {
           "type": "string"
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
         }
       },
       "additionalProperties": false,
@@ -1331,6 +1569,10 @@
         },
         "workflow": {
           "$ref": "#/definitions/yawl.StartWorkflow",
+          "additionalProperties": false
+        },
+        "while": {
+          "$ref": "#/definitions/yawl.While",
           "additionalProperties": false
         },
         "aiAgent": {
@@ -1445,6 +1687,11 @@
             },
             {
               "required": [
+                "while"
+              ]
+            },
+            {
+              "required": [
                 "aiAgent"
               ]
             }
@@ -1550,6 +1797,13 @@
         "listComments": {
           "$ref": "#/definitions/yawl.TrackerListComments",
           "additionalProperties": false
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
         }
       },
       "additionalProperties": false,
@@ -1969,6 +2223,57 @@
       ],
       "title": "Wait"
     },
+    "yawl.While": {
+      "required": [
+        "do"
+      ],
+      "properties": {
+        "input": {
+          "type": "string"
+        },
+        "output": {
+          "type": "string"
+        },
+        "do": {
+          "$ref": "#/definitions/yawl.WhileDo",
+          "additionalProperties": false
+        },
+        "condition": {
+          "type": "string"
+        },
+        "maxIterations": {
+          "type": "integer"
+        },
+        "next": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "While"
+    },
+    "yawl.WhileDo": {
+      "required": [
+        "start",
+        "steps"
+      ],
+      "properties": {
+        "start": {
+          "type": "string"
+        },
+        "steps": {
+          "minProperties": 1,
+          "additionalProperties": {
+            "$ref": "#/definitions/yawl.Step",
+            "additionalProperties": false
+          },
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "While Do"
+    },
     "yawl.YDBDocument": {
       "required": [
         "database",
@@ -2014,6 +2319,13 @@
         "scan": {
           "$ref": "#/definitions/yawl.YDBDocumentScan",
           "additionalProperties": false
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
         }
       },
       "additionalProperties": false,
@@ -2142,6 +2454,13 @@
         "put": {
           "$ref": "#/definitions/yawl.YDSPut",
           "additionalProperties": false
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
         }
       },
       "additionalProperties": false,
@@ -2201,6 +2520,13 @@
         "put": {
           "$ref": "#/definitions/yawl.YMQPut",
           "additionalProperties": false
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
         }
       },
       "additionalProperties": false,
