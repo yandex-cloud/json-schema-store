@@ -95,11 +95,44 @@
         },
         "backstory": {
           "type": "string"
+        },
+        "model": {
+          "$ref": "#/definitions/yawl.AIAgentModel",
+          "additionalProperties": false
         }
       },
       "additionalProperties": false,
       "type": "object",
       "title": "AI Agent Config"
+    },
+    "yawl.AIAgentModel": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "uri": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "name"
+              ]
+            },
+            {
+              "required": [
+                "uri"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "AI Agent Model"
     },
     "yawl.AIAgentTask": {
       "required": [
