@@ -84,7 +84,8 @@
       "required": [
         "goal",
         "role",
-        "backstory"
+        "backstory",
+        "knowledgeSources"
       ],
       "properties": {
         "goal": {
@@ -99,6 +100,13 @@
         "model": {
           "$ref": "#/definitions/yawl.AIAgentModel",
           "additionalProperties": false
+        },
+        "knowledgeSources": {
+          "items": {
+            "$ref": "#/definitions/yawl.KnowledgeSource"
+          },
+          "additionalProperties": false,
+          "type": "array"
         }
       },
       "additionalProperties": false,
@@ -260,6 +268,14 @@
               "GRPC_CALL_INTERNAL",
               "GRPC_CALL_RESOURCE_EXHAUSTED",
               "GRPC_CALL_UNAUTHENTICATED",
+              "GRPC_CALL_INVALID_ARGUMENT",
+              "GRPC_CALL_NOT_FOUND",
+              "GRPC_CALL_ALREADY_EXISTS",
+              "GRPC_CALL_PERMISSION_DENIED",
+              "GRPC_CALL_FAILED_PRECONDITION",
+              "GRPC_CALL_ABORTED",
+              "GRPC_CALL_OUT_OF_RANGE",
+              "GRPC_CALL_DATA_LOSS",
               "GRPC_CALL_INVALID_OPTIONS",
               "GRPC_CALL_INVALID_REFLECTION_SERVER_RESPONSE",
               "FUNCTION_CALL_INVALID_RESPONSE",
@@ -567,6 +583,94 @@
       "additionalProperties": false,
       "type": "object",
       "title": "Fail"
+    },
+    "yawl.FileKnowledgeSource": {
+      "required": [
+        "dataSource",
+        "type"
+      ],
+      "properties": {
+        "dataSource": {
+          "$ref": "#/definitions/yawl.FileKnowledgeSource.DataSource",
+          "additionalProperties": false
+        },
+        "type": {
+          "enum": [
+            "UNSPECIFIED",
+            "TEXT",
+            "JSON",
+            "CSV",
+            "PDF",
+            "EXCEL"
+          ],
+          "type": "string",
+          "title": "Type"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "File Knowledge Source"
+    },
+    "yawl.FileKnowledgeSource.DataSource": {
+      "properties": {
+        "urlSource": {
+          "$ref": "#/definitions/yawl.FileKnowledgeSource.UrlDataSource",
+          "additionalProperties": false
+        },
+        "objectStorageSource": {
+          "$ref": "#/definitions/yawl.FileKnowledgeSource.ObjectStorageDataSource",
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "urlSource"
+              ]
+            },
+            {
+              "required": [
+                "objectStorageSource"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Data Source"
+    },
+    "yawl.FileKnowledgeSource.ObjectStorageDataSource": {
+      "required": [
+        "bucket",
+        "object"
+      ],
+      "properties": {
+        "bucket": {
+          "type": "string"
+        },
+        "object": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Object Storage Data Source"
+    },
+    "yawl.FileKnowledgeSource.UrlDataSource": {
+      "required": [
+        "url"
+      ],
+      "properties": {
+        "url": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Url Data Source"
     },
     "yawl.Foreach": {
       "required": [
@@ -941,6 +1045,37 @@
         }
       ],
       "title": "Interpolatable Map"
+    },
+    "yawl.KnowledgeSource": {
+      "properties": {
+        "textSource": {
+          "$ref": "#/definitions/yawl.TextKnowledgeSource",
+          "additionalProperties": false
+        },
+        "fileSource": {
+          "$ref": "#/definitions/yawl.FileKnowledgeSource",
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "textSource"
+              ]
+            },
+            {
+              "required": [
+                "fileSource"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Knowledge Source"
     },
     "yawl.MapValue": {
       "properties": {
@@ -1384,6 +1519,14 @@
               "GRPC_CALL_INTERNAL",
               "GRPC_CALL_RESOURCE_EXHAUSTED",
               "GRPC_CALL_UNAUTHENTICATED",
+              "GRPC_CALL_INVALID_ARGUMENT",
+              "GRPC_CALL_NOT_FOUND",
+              "GRPC_CALL_ALREADY_EXISTS",
+              "GRPC_CALL_PERMISSION_DENIED",
+              "GRPC_CALL_FAILED_PRECONDITION",
+              "GRPC_CALL_ABORTED",
+              "GRPC_CALL_OUT_OF_RANGE",
+              "GRPC_CALL_DATA_LOSS",
               "GRPC_CALL_INVALID_OPTIONS",
               "GRPC_CALL_INVALID_REFLECTION_SERVER_RESPONSE",
               "FUNCTION_CALL_INVALID_RESPONSE",
@@ -1761,6 +1904,19 @@
       "additionalProperties": false,
       "type": "object",
       "title": "Switch"
+    },
+    "yawl.TextKnowledgeSource": {
+      "required": [
+        "content"
+      ],
+      "properties": {
+        "content": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Text Knowledge Source"
     },
     "yawl.Tracker": {
       "required": [
