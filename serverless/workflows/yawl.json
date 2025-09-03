@@ -83,9 +83,7 @@
     "yawl.AIAgentConfig": {
       "required": [
         "goal",
-        "role",
-        "backstory",
-        "knowledgeSources"
+        "role"
       ],
       "properties": {
         "goal": {
@@ -104,6 +102,13 @@
         "knowledgeSources": {
           "items": {
             "$ref": "#/definitions/yawl.KnowledgeSource"
+          },
+          "additionalProperties": false,
+          "type": "array"
+        },
+        "tools": {
+          "items": {
+            "$ref": "#/definitions/yawl.AIAgentTool"
           },
           "additionalProperties": false,
           "type": "array"
@@ -144,8 +149,7 @@
     },
     "yawl.AIAgentTask": {
       "required": [
-        "description",
-        "result"
+        "description"
       ],
       "properties": {
         "description": {
@@ -158,6 +162,28 @@
       "additionalProperties": false,
       "type": "object",
       "title": "AI Agent Task"
+    },
+    "yawl.AIAgentTool": {
+      "properties": {
+        "mcpServer": {
+          "$ref": "#/definitions/yawl.MCPServer",
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "mcpServer"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "AI Agent Tool"
     },
     "yawl.Branch": {
       "required": [
@@ -332,7 +358,8 @@
               "CONTAINER_CALL_524",
               "CONTAINER_CALL_525",
               "CONTAINER_CALL_526",
-              "YDB_CALL_SERVICE_UNAVAILABLE"
+              "YDB_CALL_SERVICE_UNAVAILABLE",
+              "AI_AGENT_MCP_TOOLS_BAD_CONFIGURATION"
             ]
           },
           "type": "array",
@@ -752,6 +779,14 @@
           "$ref": "#/definitions/yawl.FoundationModelsGenerate",
           "additionalProperties": false
         },
+        "classify": {
+          "$ref": "#/definitions/yawl.FoundationModelsClassify",
+          "additionalProperties": false
+        },
+        "fewShotClassify": {
+          "$ref": "#/definitions/yawl.FoundationModelsFewShotClassify",
+          "additionalProperties": false
+        },
         "catch": {
           "items": {
             "$ref": "#/definitions/yawl.CatchRule"
@@ -769,11 +804,147 @@
               "required": [
                 "generate"
               ]
+            },
+            {
+              "required": [
+                "classify"
+              ]
+            },
+            {
+              "required": [
+                "fewShotClassify"
+              ]
             }
           ]
         }
       ],
       "title": "Foundation Models Call"
+    },
+    "yawl.FoundationModelsClassify": {
+      "required": [
+        "text"
+      ],
+      "properties": {
+        "text": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Foundation Models Classify"
+    },
+    "yawl.FoundationModelsFewShotClassify": {
+      "required": [
+        "taskDescription",
+        "text"
+      ],
+      "properties": {
+        "taskDescription": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "labelsJson": {
+          "type": "string"
+        },
+        "labelsArray": {
+          "$ref": "#/definitions/yawl.FoundationModelsFewShotClassify.Labels",
+          "additionalProperties": false
+        },
+        "samplesJson": {
+          "type": "string"
+        },
+        "samplesArray": {
+          "$ref": "#/definitions/yawl.FoundationModelsFewShotClassify.Samples",
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "labelsJson"
+              ]
+            },
+            {
+              "required": [
+                "labelsArray"
+              ]
+            }
+          ]
+        },
+        {
+          "oneOf": [
+            {
+              "required": [
+                "samplesJson"
+              ]
+            },
+            {
+              "required": [
+                "samplesArray"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Foundation Models Few Shot Classify"
+    },
+    "yawl.FoundationModelsFewShotClassify.Labels": {
+      "required": [
+        "labels"
+      ],
+      "properties": {
+        "labels": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Labels"
+    },
+    "yawl.FoundationModelsFewShotClassify.Sample": {
+      "required": [
+        "text",
+        "label"
+      ],
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Sample"
+    },
+    "yawl.FoundationModelsFewShotClassify.Samples": {
+      "required": [
+        "samples"
+      ],
+      "properties": {
+        "samples": {
+          "items": {
+            "$ref": "#/definitions/yawl.FoundationModelsFewShotClassify.Sample"
+          },
+          "minItems": 1,
+          "additionalProperties": false,
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Samples"
     },
     "yawl.FoundationModelsGenerate": {
       "required": [
@@ -793,6 +964,16 @@
         "messages": {
           "$ref": "#/definitions/yawl.FoundationModelsGenerate.Messages",
           "additionalProperties": false
+        },
+        "reasoningOptions": {
+          "$ref": "#/definitions/yawl.FoundationModelsGenerate.ReasoningOptions",
+          "additionalProperties": false
+        },
+        "jsonSchema": {
+          "type": "string"
+        },
+        "jsonObject": {
+          "type": "boolean"
         }
       },
       "additionalProperties": false,
@@ -808,6 +989,20 @@
             {
               "required": [
                 "messages"
+              ]
+            }
+          ]
+        },
+        {
+          "oneOf": [
+            {
+              "required": [
+                "jsonSchema"
+              ]
+            },
+            {
+              "required": [
+                "jsonObject"
               ]
             }
           ]
@@ -849,6 +1044,25 @@
       "additionalProperties": false,
       "type": "object",
       "title": "Messages"
+    },
+    "yawl.FoundationModelsGenerate.ReasoningOptions": {
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "REASONING_MODE_UNSPECIFIED",
+            "DISABLED",
+            "ENABLED_HIDDEN"
+          ],
+          "type": "string",
+          "title": "Mode"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Reasoning Options"
     },
     "yawl.FunctionCall": {
       "required": [
@@ -1076,6 +1290,51 @@
         }
       ],
       "title": "Knowledge Source"
+    },
+    "yawl.MCPServer": {
+      "required": [
+        "endpoint",
+        "transport"
+      ],
+      "properties": {
+        "endpoint": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        },
+        "useServiceAccount": {
+          "type": "boolean"
+        },
+        "transport": {
+          "enum": [
+            "UNSPECIFIED",
+            "SSE",
+            "STREAMABLE"
+          ],
+          "type": "string",
+          "title": "Transport"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "token"
+              ]
+            },
+            {
+              "required": [
+                "useServiceAccount"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "MCP Server"
     },
     "yawl.MapValue": {
       "properties": {
@@ -1583,7 +1842,8 @@
               "CONTAINER_CALL_524",
               "CONTAINER_CALL_525",
               "CONTAINER_CALL_526",
-              "YDB_CALL_SERVICE_UNAVAILABLE"
+              "YDB_CALL_SERVICE_UNAVAILABLE",
+              "AI_AGENT_MCP_TOOLS_BAD_CONFIGURATION"
             ]
           },
           "type": "array",
@@ -1754,6 +2014,10 @@
         "aiAgent": {
           "$ref": "#/definitions/yawl.AIAgent",
           "additionalProperties": false
+        },
+        "telegramBot": {
+          "$ref": "#/definitions/yawl.TelegramBot",
+          "additionalProperties": false
         }
       },
       "additionalProperties": false,
@@ -1870,6 +2134,11 @@
               "required": [
                 "aiAgent"
               ]
+            },
+            {
+              "required": [
+                "telegramBot"
+              ]
             }
           ]
         }
@@ -1904,6 +2173,89 @@
       "additionalProperties": false,
       "type": "object",
       "title": "Switch"
+    },
+    "yawl.TelegramBot": {
+      "required": [
+        "token"
+      ],
+      "properties": {
+        "input": {
+          "type": "string"
+        },
+        "output": {
+          "type": "string"
+        },
+        "next": {
+          "type": "string"
+        },
+        "timeout": {
+          "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+          "type": "string",
+          "format": "regex"
+        },
+        "retryPolicy": {
+          "$ref": "#/definitions/yawl.RetryPolicy",
+          "additionalProperties": false
+        },
+        "token": {
+          "type": "string"
+        },
+        "sendMessage": {
+          "$ref": "#/definitions/yawl.TelegramBotSendMessage",
+          "additionalProperties": false
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "sendMessage"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Telegram Bot"
+    },
+    "yawl.TelegramBotSendMessage": {
+      "required": [
+        "chatId",
+        "text"
+      ],
+      "properties": {
+        "chatId": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "parseMode": {
+          "enum": [
+            "UNSPECIFIED",
+            "MARKDOWN",
+            "MARKDOWNV2",
+            "HTML"
+          ],
+          "type": "string",
+          "title": "Parse Mode"
+        },
+        "replyTo": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Telegram Bot Send Message"
     },
     "yawl.TextKnowledgeSource": {
       "required": [
