@@ -185,6 +185,50 @@
       ],
       "title": "AI Agent Tool"
     },
+    "yawl.AIStudioAgent": {
+      "required": [
+        "promptTemplateId"
+      ],
+      "properties": {
+        "input": {
+          "type": "string"
+        },
+        "output": {
+          "type": "string"
+        },
+        "next": {
+          "type": "string"
+        },
+        "timeout": {
+          "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+          "type": "string",
+          "format": "regex"
+        },
+        "retryPolicy": {
+          "$ref": "#/definitions/yawl.RetryPolicy",
+          "additionalProperties": false
+        },
+        "promptTemplateId": {
+          "type": "string"
+        },
+        "variables": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "AI Studio Agent"
+    },
     "yawl.Branch": {
       "required": [
         "start",
@@ -359,7 +403,12 @@
               "CONTAINER_CALL_525",
               "CONTAINER_CALL_526",
               "YDB_CALL_SERVICE_UNAVAILABLE",
-              "AI_AGENT_MCP_TOOLS_BAD_CONFIGURATION"
+              "AI_AGENT_MCP_TOOLS_BAD_CONFIGURATION",
+              "AI_AGENT_MAX_ITERATIONS_REACHED",
+              "DATABASE_QUERY_CONNECTION_FAILED",
+              "DATABASE_QUERY_UNAVAILABLE",
+              "DATABASE_QUERY_CONSTRAINT_VIOLATION",
+              "DATABASE_QUERY_DEADLOCK"
             ]
           },
           "type": "array",
@@ -471,6 +520,153 @@
       "additionalProperties": false,
       "type": "object",
       "title": "Container Call"
+    },
+    "yawl.DatabaseConnection": {
+      "required": [
+        "type",
+        "host",
+        "port",
+        "database"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "UNSPECIFIED",
+            "MYSQL",
+            "POSTGRES",
+            "YDB",
+            "CLICKHOUSE"
+          ],
+          "type": "string",
+          "title": "Type"
+        },
+        "host": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer"
+        },
+        "database": {
+          "type": "string"
+        },
+        "ssl": {
+          "type": "boolean"
+        },
+        "simple": {
+          "$ref": "#/definitions/yawl.DatabaseConnectionSimpleAuth",
+          "additionalProperties": false
+        },
+        "iam": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "simple"
+              ]
+            },
+            {
+              "required": [
+                "iam"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Database Connection"
+    },
+    "yawl.DatabaseConnectionSimpleAuth": {
+      "required": [
+        "username",
+        "password"
+      ],
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Database Connection Simple Auth"
+    },
+    "yawl.DatabaseQuery": {
+      "required": [
+        "query",
+        "mode"
+      ],
+      "properties": {
+        "input": {
+          "type": "string"
+        },
+        "output": {
+          "type": "string"
+        },
+        "next": {
+          "type": "string"
+        },
+        "timeout": {
+          "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+          "type": "string",
+          "format": "regex"
+        },
+        "retryPolicy": {
+          "$ref": "#/definitions/yawl.RetryPolicy",
+          "additionalProperties": false
+        },
+        "connection": {
+          "$ref": "#/definitions/yawl.DatabaseConnection",
+          "additionalProperties": false
+        },
+        "dsn": {
+          "type": "string"
+        },
+        "query": {
+          "type": "string"
+        },
+        "mode": {
+          "enum": [
+            "UNSPECIFIED",
+            "EXEC",
+            "QUERY"
+          ],
+          "type": "string",
+          "title": "Query Mode"
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "connection"
+              ]
+            },
+            {
+              "required": [
+                "dsn"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Database Query"
     },
     "yawl.Default": {
       "required": [
@@ -1843,7 +2039,12 @@
               "CONTAINER_CALL_525",
               "CONTAINER_CALL_526",
               "YDB_CALL_SERVICE_UNAVAILABLE",
-              "AI_AGENT_MCP_TOOLS_BAD_CONFIGURATION"
+              "AI_AGENT_MCP_TOOLS_BAD_CONFIGURATION",
+              "AI_AGENT_MAX_ITERATIONS_REACHED",
+              "DATABASE_QUERY_CONNECTION_FAILED",
+              "DATABASE_QUERY_UNAVAILABLE",
+              "DATABASE_QUERY_CONSTRAINT_VIOLATION",
+              "DATABASE_QUERY_DEADLOCK"
             ]
           },
           "type": "array",
@@ -2018,6 +2219,18 @@
         "telegramBot": {
           "$ref": "#/definitions/yawl.TelegramBot",
           "additionalProperties": false
+        },
+        "databaseQuery": {
+          "$ref": "#/definitions/yawl.DatabaseQuery",
+          "additionalProperties": false
+        },
+        "aiStudioAgent": {
+          "$ref": "#/definitions/yawl.AIStudioAgent",
+          "additionalProperties": false
+        },
+        "vectorStore": {
+          "$ref": "#/definitions/yawl.VectorStore",
+          "additionalProperties": false
         }
       },
       "additionalProperties": false,
@@ -2138,6 +2351,21 @@
             {
               "required": [
                 "telegramBot"
+              ]
+            },
+            {
+              "required": [
+                "databaseQuery"
+              ]
+            },
+            {
+              "required": [
+                "aiStudioAgent"
+              ]
+            },
+            {
+              "required": [
+                "vectorStore"
               ]
             }
           ]
@@ -2731,6 +2959,156 @@
       "additionalProperties": false,
       "type": "object",
       "title": "Tracker Update Issue Status"
+    },
+    "yawl.VectorStore": {
+      "properties": {
+        "input": {
+          "type": "string"
+        },
+        "output": {
+          "type": "string"
+        },
+        "next": {
+          "type": "string"
+        },
+        "timeout": {
+          "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+          "type": "string",
+          "format": "regex"
+        },
+        "retryPolicy": {
+          "$ref": "#/definitions/yawl.RetryPolicy",
+          "additionalProperties": false
+        },
+        "uploadFile": {
+          "$ref": "#/definitions/yawl.VectorStore.UploadFile",
+          "additionalProperties": false
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "uploadFile"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Vector Store"
+    },
+    "yawl.VectorStore.UploadFile": {
+      "required": [
+        "vectorStoreId"
+      ],
+      "properties": {
+        "vectorStoreId": {
+          "type": "string"
+        },
+        "textFile": {
+          "$ref": "#/definitions/yawl.VectorStore.UploadFile.TextFile",
+          "additionalProperties": false
+        },
+        "urlFile": {
+          "$ref": "#/definitions/yawl.VectorStore.UploadFile.UrlFile",
+          "additionalProperties": false
+        },
+        "objectStorage": {
+          "$ref": "#/definitions/yawl.VectorStore.UploadFile.ObjectStorage",
+          "additionalProperties": false
+        },
+        "attributes": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "textFile"
+              ]
+            },
+            {
+              "required": [
+                "urlFile"
+              ]
+            },
+            {
+              "required": [
+                "objectStorage"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Upload File"
+    },
+    "yawl.VectorStore.UploadFile.ObjectStorage": {
+      "required": [
+        "bucket",
+        "object"
+      ],
+      "properties": {
+        "bucket": {
+          "type": "string"
+        },
+        "object": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Object Storage"
+    },
+    "yawl.VectorStore.UploadFile.TextFile": {
+      "required": [
+        "text",
+        "fileName"
+      ],
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "fileName": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Text File"
+    },
+    "yawl.VectorStore.UploadFile.UrlFile": {
+      "required": [
+        "url",
+        "fileName"
+      ],
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "fileName": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Url File"
     },
     "yawl.Wait": {
       "properties": {
