@@ -217,6 +217,9 @@
           },
           "type": "object"
         },
+        "message": {
+          "type": "string"
+        },
         "catch": {
           "items": {
             "$ref": "#/definitions/yawl.CatchRule"
