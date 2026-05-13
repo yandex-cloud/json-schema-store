@@ -10,7 +10,7 @@
       ],
       "properties": {
         "yawl": {
-          "pattern": "^0.1$",
+          "pattern": "^0\\.[0-9]+$",
           "type": "string"
         },
         "start": {
@@ -219,6 +219,9 @@
         },
         "message": {
           "type": "string"
+        },
+        "autoApprove": {
+          "type": "boolean"
         },
         "catch": {
           "items": {
@@ -986,12 +989,19 @@
           "$ref": "#/definitions/yawl.FoundationModelsFewShotClassify",
           "additionalProperties": false
         },
+        "vision": {
+          "$ref": "#/definitions/yawl.FoundationModelsVision",
+          "additionalProperties": false
+        },
         "catch": {
           "items": {
             "$ref": "#/definitions/yawl.CatchRule"
           },
           "additionalProperties": false,
           "type": "array"
+        },
+        "dataLoggingEnabled": {
+          "type": "boolean"
         }
       },
       "additionalProperties": false,
@@ -1012,6 +1022,11 @@
             {
               "required": [
                 "fewShotClassify"
+              ]
+            },
+            {
+              "required": [
+                "vision"
               ]
             }
           ]
@@ -1262,6 +1277,166 @@
       "additionalProperties": false,
       "type": "object",
       "title": "Reasoning Options"
+    },
+    "yawl.FoundationModelsVision": {
+      "required": [
+        "temperature",
+        "maxTokens"
+      ],
+      "properties": {
+        "temperature": {
+          "type": "number"
+        },
+        "maxTokens": {
+          "type": "integer"
+        },
+        "json": {
+          "type": "string"
+        },
+        "messages": {
+          "$ref": "#/definitions/yawl.FoundationModelsVision.Messages",
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "json"
+              ]
+            },
+            {
+              "required": [
+                "messages"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Foundation Models Vision"
+    },
+    "yawl.FoundationModelsVision.File": {
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "objectStorage": {
+          "$ref": "#/definitions/yawl.FoundationModelsVision.ObjectStorage",
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "url"
+              ]
+            },
+            {
+              "required": [
+                "objectStorage"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "File"
+    },
+    "yawl.FoundationModelsVision.Image": {
+      "properties": {
+        "base64": {
+          "type": "string"
+        },
+        "file": {
+          "$ref": "#/definitions/yawl.FoundationModelsVision.File",
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "base64"
+              ]
+            },
+            {
+              "required": [
+                "file"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Image"
+    },
+    "yawl.FoundationModelsVision.Message": {
+      "required": [
+        "role",
+        "text",
+        "images"
+      ],
+      "properties": {
+        "role": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "images": {
+          "items": {
+            "$ref": "#/definitions/yawl.FoundationModelsVision.Image"
+          },
+          "additionalProperties": false,
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Message"
+    },
+    "yawl.FoundationModelsVision.Messages": {
+      "required": [
+        "messages"
+      ],
+      "properties": {
+        "messages": {
+          "items": {
+            "$ref": "#/definitions/yawl.FoundationModelsVision.Message"
+          },
+          "minItems": 1,
+          "additionalProperties": false,
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Messages"
+    },
+    "yawl.FoundationModelsVision.ObjectStorage": {
+      "required": [
+        "bucket",
+        "object"
+      ],
+      "properties": {
+        "bucket": {
+          "type": "string"
+        },
+        "object": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Object Storage"
     },
     "yawl.FunctionCall": {
       "required": [
