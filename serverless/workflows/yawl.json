@@ -1850,6 +1850,155 @@
       "type": "object",
       "title": "Object Storage Put"
     },
+    "yawl.OCR": {
+      "required": [
+        "catch"
+      ],
+      "properties": {
+        "input": {
+          "type": "string"
+        },
+        "output": {
+          "type": "string"
+        },
+        "next": {
+          "type": "string"
+        },
+        "timeout": {
+          "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+          "type": "string",
+          "format": "regex"
+        },
+        "retryPolicy": {
+          "$ref": "#/definitions/yawl.RetryPolicy",
+          "additionalProperties": false
+        },
+        "recognizeText": {
+          "$ref": "#/definitions/yawl.OCR.RecognizeText",
+          "additionalProperties": false
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
+        },
+        "base64": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "objectStorage": {
+          "$ref": "#/definitions/yawl.OCR.ObjectStorage",
+          "additionalProperties": false
+        },
+        "disk": {
+          "$ref": "#/definitions/yawl.OCR.Disk",
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "recognizeText"
+              ]
+            }
+          ]
+        },
+        {
+          "oneOf": [
+            {
+              "required": [
+                "base64"
+              ]
+            },
+            {
+              "required": [
+                "url"
+              ]
+            },
+            {
+              "required": [
+                "objectStorage"
+              ]
+            },
+            {
+              "required": [
+                "disk"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "OCR"
+    },
+    "yawl.OCR.Disk": {
+      "required": [
+        "oauthToken",
+        "path"
+      ],
+      "properties": {
+        "oauthToken": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "sharedDiskId": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Disk"
+    },
+    "yawl.OCR.ObjectStorage": {
+      "required": [
+        "bucket",
+        "object"
+      ],
+      "properties": {
+        "bucket": {
+          "type": "string"
+        },
+        "object": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Object Storage"
+    },
+    "yawl.OCR.RecognizeText": {
+      "required": [
+        "mimeType",
+        "languageCodes",
+        "model"
+      ],
+      "properties": {
+        "mimeType": {
+          "type": "string"
+        },
+        "languageCodes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "model": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Recognize Text"
+    },
     "yawl.Organization": {
       "properties": {
         "yandexOrganizationId": {
@@ -2298,6 +2447,155 @@
       "type": "object",
       "title": "Start Workflow"
     },
+    "yawl.STT": {
+      "required": [
+        "catch"
+      ],
+      "properties": {
+        "input": {
+          "type": "string"
+        },
+        "output": {
+          "type": "string"
+        },
+        "next": {
+          "type": "string"
+        },
+        "timeout": {
+          "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+          "type": "string",
+          "format": "regex"
+        },
+        "retryPolicy": {
+          "$ref": "#/definitions/yawl.RetryPolicy",
+          "additionalProperties": false
+        },
+        "recognizeText": {
+          "$ref": "#/definitions/yawl.STT.RecognizeText",
+          "additionalProperties": false
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
+        },
+        "base64": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "objectStorage": {
+          "$ref": "#/definitions/yawl.STT.ObjectStorage",
+          "additionalProperties": false
+        },
+        "disk": {
+          "$ref": "#/definitions/yawl.STT.Disk",
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "recognizeText"
+              ]
+            }
+          ]
+        },
+        {
+          "oneOf": [
+            {
+              "required": [
+                "base64"
+              ]
+            },
+            {
+              "required": [
+                "url"
+              ]
+            },
+            {
+              "required": [
+                "objectStorage"
+              ]
+            },
+            {
+              "required": [
+                "disk"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "STT"
+    },
+    "yawl.STT.Disk": {
+      "required": [
+        "oauthToken",
+        "path"
+      ],
+      "properties": {
+        "oauthToken": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "sharedDiskId": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Disk"
+    },
+    "yawl.STT.ObjectStorage": {
+      "required": [
+        "bucket",
+        "object"
+      ],
+      "properties": {
+        "bucket": {
+          "type": "string"
+        },
+        "object": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Object Storage"
+    },
+    "yawl.STT.RecognizeText": {
+      "required": [
+        "audioFormat",
+        "languageCodes",
+        "model"
+      ],
+      "properties": {
+        "audioFormat": {
+          "type": "string"
+        },
+        "languageCodes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "model": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Recognize Text"
+    },
     "yawl.Step": {
       "properties": {
         "title": {
@@ -2408,6 +2706,14 @@
         },
         "vectorStore": {
           "$ref": "#/definitions/yawl.VectorStore",
+          "additionalProperties": false
+        },
+        "ocr": {
+          "$ref": "#/definitions/yawl.OCR",
+          "additionalProperties": false
+        },
+        "stt": {
+          "$ref": "#/definitions/yawl.STT",
           "additionalProperties": false
         }
       },
@@ -2544,6 +2850,16 @@
             {
               "required": [
                 "vectorStore"
+              ]
+            },
+            {
+              "required": [
+                "ocr"
+              ]
+            },
+            {
+              "required": [
+                "stt"
               ]
             }
           ]
