@@ -223,6 +223,9 @@
         "autoApprove": {
           "type": "boolean"
         },
+        "convertToJson": {
+          "type": "boolean"
+        },
         "catch": {
           "items": {
             "$ref": "#/definitions/yawl.CatchRule"
@@ -234,6 +237,41 @@
       "additionalProperties": false,
       "type": "object",
       "title": "AI Studio Agent"
+    },
+    "yawl.BatchAttachments": {
+      "properties": {
+        "filesApi": {
+          "$ref": "#/definitions/yawl.BatchAttachments.FilesApi",
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "filesApi"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Batch Attachments"
+    },
+    "yawl.BatchAttachments.FilesApi": {
+      "required": [
+        "jsonIds"
+      ],
+      "properties": {
+        "jsonIds": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Files Api"
     },
     "yawl.Branch": {
       "required": [
@@ -414,7 +452,9 @@
               "DATABASE_QUERY_CONNECTION_FAILED",
               "DATABASE_QUERY_UNAVAILABLE",
               "DATABASE_QUERY_CONSTRAINT_VIOLATION",
-              "DATABASE_QUERY_DEADLOCK"
+              "DATABASE_QUERY_DEADLOCK",
+              "MCP_BAD_CONFIGURATION",
+              "MCP_TOOL_CALL_ERROR"
             ]
           },
           "type": "array",
@@ -799,6 +839,135 @@
       "additionalProperties": false,
       "type": "object",
       "title": "Disk Upload"
+    },
+    "yawl.DistinctAttachment": {
+      "required": [
+        "fileName",
+        "contentSource"
+      ],
+      "properties": {
+        "fileName": {
+          "type": "string"
+        },
+        "contentSource": {
+          "$ref": "#/definitions/yawl.DistinctAttachment.ContentSource",
+          "additionalProperties": false
+        },
+        "contentType": {
+          "type": "string"
+        },
+        "contentDescription": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Distinct Attachment"
+    },
+    "yawl.DistinctAttachment.ContentSource": {
+      "properties": {
+        "raw": {
+          "$ref": "#/definitions/yawl.DistinctAttachment.ContentSource.Raw",
+          "additionalProperties": false
+        },
+        "url": {
+          "$ref": "#/definitions/yawl.DistinctAttachment.ContentSource.Url",
+          "additionalProperties": false
+        },
+        "objectStorage": {
+          "$ref": "#/definitions/yawl.DistinctAttachment.ContentSource.ObjectStorage",
+          "additionalProperties": false
+        },
+        "filesApi": {
+          "$ref": "#/definitions/yawl.DistinctAttachment.ContentSource.FilesApi",
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "raw"
+              ]
+            },
+            {
+              "required": [
+                "url"
+              ]
+            },
+            {
+              "required": [
+                "objectStorage"
+              ]
+            },
+            {
+              "required": [
+                "filesApi"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Content Source"
+    },
+    "yawl.DistinctAttachment.ContentSource.FilesApi": {
+      "required": [
+        "fileId"
+      ],
+      "properties": {
+        "fileId": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Files Api"
+    },
+    "yawl.DistinctAttachment.ContentSource.ObjectStorage": {
+      "required": [
+        "bucket",
+        "object"
+      ],
+      "properties": {
+        "bucket": {
+          "type": "string"
+        },
+        "object": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Object Storage"
+    },
+    "yawl.DistinctAttachment.ContentSource.Raw": {
+      "required": [
+        "data"
+      ],
+      "properties": {
+        "data": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Raw"
+    },
+    "yawl.DistinctAttachment.ContentSource.Url": {
+      "required": [
+        "url"
+      ],
+      "properties": {
+        "url": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Url"
     },
     "yawl.Fail": {
       "required": [
@@ -1665,6 +1834,99 @@
       ],
       "title": "Knowledge Source"
     },
+    "yawl.MCP": {
+      "required": [
+        "serverId",
+        "transport",
+        "baseDomain"
+      ],
+      "properties": {
+        "input": {
+          "type": "string"
+        },
+        "output": {
+          "type": "string"
+        },
+        "next": {
+          "type": "string"
+        },
+        "timeout": {
+          "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+          "type": "string",
+          "format": "regex"
+        },
+        "retryPolicy": {
+          "$ref": "#/definitions/yawl.RetryPolicy",
+          "additionalProperties": false
+        },
+        "serverId": {
+          "type": "string",
+          "description": "ID of an MCP Gateway."
+        },
+        "toolCall": {
+          "$ref": "#/definitions/yawl.MCP.ToolCall",
+          "additionalProperties": false
+        },
+        "transport": {
+          "enum": [
+            "UNSPECIFIED",
+            "SSE",
+            "STREAMABLE"
+          ],
+          "type": "string",
+          "title": "Transport"
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
+        },
+        "baseDomain": {
+          "type": "string",
+          "description": "Runtime base domain of the MCP Gateway selected by the user."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "toolCall"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "MCP"
+    },
+    "yawl.MCP.ToolCall": {
+      "required": [
+        "name",
+        "arguments"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "arguments": {
+          "type": "string"
+        },
+        "headers": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object",
+          "description": "Additional HTTP headers forwarded to the upstream MCP server via the hub."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Tool Call"
+    },
     "yawl.MCPServer": {
       "required": [
         "endpoint",
@@ -1710,6 +1972,141 @@
       ],
       "title": "MCP Server"
     },
+    "yawl.ManualApproval": {
+      "required": [
+        "subject",
+        "message",
+        "channels",
+        "outcomes"
+      ],
+      "properties": {
+        "input": {
+          "type": "string"
+        },
+        "output": {
+          "type": "string"
+        },
+        "subject": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "channels": {
+          "items": {
+            "$ref": "#/definitions/yawl.ManualApproval.Channel"
+          },
+          "minItems": 1,
+          "additionalProperties": false,
+          "type": "array"
+        },
+        "outcomes": {
+          "items": {
+            "$ref": "#/definitions/yawl.ManualApproval.Outcome"
+          },
+          "minItems": 1,
+          "additionalProperties": false,
+          "type": "array"
+        },
+        "timeout": {
+          "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+          "type": "string",
+          "format": "regex"
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Manual Approval"
+    },
+    "yawl.ManualApproval.Channel": {
+      "properties": {
+        "email": {
+          "$ref": "#/definitions/yawl.ManualApproval.EmailChannel",
+          "additionalProperties": false
+        },
+        "telegram": {
+          "$ref": "#/definitions/yawl.ManualApproval.TelegramChannel",
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "email"
+              ]
+            },
+            {
+              "required": [
+                "telegram"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Channel"
+    },
+    "yawl.ManualApproval.EmailChannel": {
+      "required": [
+        "recipients"
+      ],
+      "properties": {
+        "recipients": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Email Channel"
+    },
+    "yawl.ManualApproval.Outcome": {
+      "required": [
+        "verdict",
+        "next"
+      ],
+      "properties": {
+        "verdict": {
+          "type": "string"
+        },
+        "next": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Outcome"
+    },
+    "yawl.ManualApproval.TelegramChannel": {
+      "required": [
+        "chatIds"
+      ],
+      "properties": {
+        "chatIds": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Telegram Channel"
+    },
     "yawl.MapValue": {
       "properties": {
         "pairs": {
@@ -1740,120 +2137,7 @@
       "type": "object",
       "title": "No Op"
     },
-    "yawl.ObjectStorage": {
-      "required": [
-        "bucket",
-        "object"
-      ],
-      "properties": {
-        "input": {
-          "type": "string"
-        },
-        "output": {
-          "type": "string"
-        },
-        "next": {
-          "type": "string"
-        },
-        "timeout": {
-          "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
-          "type": "string",
-          "format": "regex"
-        },
-        "retryPolicy": {
-          "$ref": "#/definitions/yawl.RetryPolicy",
-          "additionalProperties": false
-        },
-        "bucket": {
-          "type": "string"
-        },
-        "object": {
-          "type": "string"
-        },
-        "put": {
-          "$ref": "#/definitions/yawl.ObjectStoragePut",
-          "additionalProperties": false
-        },
-        "get": {
-          "$ref": "#/definitions/yawl.ObjectStorageGet",
-          "additionalProperties": false
-        },
-        "catch": {
-          "items": {
-            "$ref": "#/definitions/yawl.CatchRule"
-          },
-          "additionalProperties": false,
-          "type": "array"
-        }
-      },
-      "additionalProperties": false,
-      "type": "object",
-      "allOf": [
-        {
-          "oneOf": [
-            {
-              "required": [
-                "put"
-              ]
-            },
-            {
-              "required": [
-                "get"
-              ]
-            }
-          ]
-        }
-      ],
-      "title": "Object Storage"
-    },
-    "yawl.ObjectStorageGet": {
-      "properties": {
-        "contentType": {
-          "enum": [
-            "BINARY",
-            "JSON",
-            "TEXT",
-            "EXCEL",
-            "CSV"
-          ],
-          "type": "string",
-          "title": "Storage Content Type",
-          "description": "Used for Object Storage and Yandex Disk downloads"
-        }
-      },
-      "additionalProperties": false,
-      "type": "object",
-      "title": "Object Storage Get"
-    },
-    "yawl.ObjectStoragePut": {
-      "required": [
-        "content"
-      ],
-      "properties": {
-        "content": {
-          "type": "string"
-        },
-        "contentType": {
-          "enum": [
-            "BINARY",
-            "JSON",
-            "TEXT",
-            "EXCEL",
-            "CSV"
-          ],
-          "type": "string",
-          "title": "Storage Content Type",
-          "description": "Used for Object Storage and Yandex Disk downloads"
-        }
-      },
-      "additionalProperties": false,
-      "type": "object",
-      "title": "Object Storage Put"
-    },
     "yawl.OCR": {
-      "required": [
-        "catch"
-      ],
       "properties": {
         "input": {
           "type": "string"
@@ -1998,6 +2282,116 @@
       "additionalProperties": false,
       "type": "object",
       "title": "Recognize Text"
+    },
+    "yawl.ObjectStorage": {
+      "required": [
+        "bucket",
+        "object"
+      ],
+      "properties": {
+        "input": {
+          "type": "string"
+        },
+        "output": {
+          "type": "string"
+        },
+        "next": {
+          "type": "string"
+        },
+        "timeout": {
+          "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+          "type": "string",
+          "format": "regex"
+        },
+        "retryPolicy": {
+          "$ref": "#/definitions/yawl.RetryPolicy",
+          "additionalProperties": false
+        },
+        "bucket": {
+          "type": "string"
+        },
+        "object": {
+          "type": "string"
+        },
+        "put": {
+          "$ref": "#/definitions/yawl.ObjectStoragePut",
+          "additionalProperties": false
+        },
+        "get": {
+          "$ref": "#/definitions/yawl.ObjectStorageGet",
+          "additionalProperties": false
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "put"
+              ]
+            },
+            {
+              "required": [
+                "get"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Object Storage"
+    },
+    "yawl.ObjectStorageGet": {
+      "properties": {
+        "contentType": {
+          "enum": [
+            "BINARY",
+            "JSON",
+            "TEXT",
+            "EXCEL",
+            "CSV"
+          ],
+          "type": "string",
+          "title": "Storage Content Type",
+          "description": "Used for Object Storage and Yandex Disk downloads"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Object Storage Get"
+    },
+    "yawl.ObjectStoragePut": {
+      "required": [
+        "content"
+      ],
+      "properties": {
+        "content": {
+          "type": "string"
+        },
+        "contentType": {
+          "enum": [
+            "BINARY",
+            "JSON",
+            "TEXT",
+            "EXCEL",
+            "CSV"
+          ],
+          "type": "string",
+          "title": "Storage Content Type",
+          "description": "Used for Object Storage and Yandex Disk downloads"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Object Storage Put"
     },
     "yawl.Organization": {
       "properties": {
@@ -2200,7 +2594,8 @@
     "yawl.PostboxSimpleMessage": {
       "required": [
         "subject",
-        "body"
+        "body",
+        "attachments"
       ],
       "properties": {
         "subject": {
@@ -2209,6 +2604,17 @@
         },
         "body": {
           "$ref": "#/definitions/yawl.PostboxBody",
+          "additionalProperties": false
+        },
+        "attachments": {
+          "items": {
+            "$ref": "#/definitions/yawl.DistinctAttachment"
+          },
+          "additionalProperties": false,
+          "type": "array"
+        },
+        "batchAttachments": {
+          "$ref": "#/definitions/yawl.BatchAttachments",
           "additionalProperties": false
         }
       },
@@ -2371,7 +2777,9 @@
               "DATABASE_QUERY_CONNECTION_FAILED",
               "DATABASE_QUERY_UNAVAILABLE",
               "DATABASE_QUERY_CONSTRAINT_VIOLATION",
-              "DATABASE_QUERY_DEADLOCK"
+              "DATABASE_QUERY_DEADLOCK",
+              "MCP_BAD_CONFIGURATION",
+              "MCP_TOOL_CALL_ERROR"
             ]
           },
           "type": "array",
@@ -2406,51 +2814,7 @@
       "type": "object",
       "title": "Retry Policy"
     },
-    "yawl.StartWorkflow": {
-      "required": [
-        "workflowId"
-      ],
-      "properties": {
-        "input": {
-          "type": "string"
-        },
-        "output": {
-          "type": "string"
-        },
-        "next": {
-          "type": "string"
-        },
-        "timeout": {
-          "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
-          "type": "string",
-          "format": "regex"
-        },
-        "retryPolicy": {
-          "$ref": "#/definitions/yawl.RetryPolicy",
-          "additionalProperties": false
-        },
-        "workflowId": {
-          "type": "string"
-        },
-        "executionInput": {
-          "type": "string"
-        },
-        "catch": {
-          "items": {
-            "$ref": "#/definitions/yawl.CatchRule"
-          },
-          "additionalProperties": false,
-          "type": "array"
-        }
-      },
-      "additionalProperties": false,
-      "type": "object",
-      "title": "Start Workflow"
-    },
     "yawl.STT": {
-      "required": [
-        "catch"
-      ],
       "properties": {
         "input": {
           "type": "string"
@@ -2596,6 +2960,47 @@
       "type": "object",
       "title": "Recognize Text"
     },
+    "yawl.StartWorkflow": {
+      "required": [
+        "workflowId"
+      ],
+      "properties": {
+        "input": {
+          "type": "string"
+        },
+        "output": {
+          "type": "string"
+        },
+        "next": {
+          "type": "string"
+        },
+        "timeout": {
+          "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+          "type": "string",
+          "format": "regex"
+        },
+        "retryPolicy": {
+          "$ref": "#/definitions/yawl.RetryPolicy",
+          "additionalProperties": false
+        },
+        "workflowId": {
+          "type": "string"
+        },
+        "executionInput": {
+          "type": "string"
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Start Workflow"
+    },
     "yawl.Step": {
       "properties": {
         "title": {
@@ -2714,6 +3119,18 @@
         },
         "stt": {
           "$ref": "#/definitions/yawl.STT",
+          "additionalProperties": false
+        },
+        "yandexMessenger": {
+          "$ref": "#/definitions/yawl.YandexMessenger",
+          "additionalProperties": false
+        },
+        "mcp": {
+          "$ref": "#/definitions/yawl.MCP",
+          "additionalProperties": false
+        },
+        "manualApproval": {
+          "$ref": "#/definitions/yawl.ManualApproval",
           "additionalProperties": false
         }
       },
@@ -2860,6 +3277,21 @@
             {
               "required": [
                 "stt"
+              ]
+            },
+            {
+              "required": [
+                "yandexMessenger"
+              ]
+            },
+            {
+              "required": [
+                "mcp"
+              ]
+            },
+            {
+              "required": [
+                "manualApproval"
               ]
             }
           ]
@@ -3966,6 +4398,112 @@
       "additionalProperties": false,
       "type": "object",
       "title": "YMQ Put"
+    },
+    "yawl.YandexMessenger": {
+      "required": [
+        "token"
+      ],
+      "properties": {
+        "input": {
+          "type": "string"
+        },
+        "output": {
+          "type": "string"
+        },
+        "next": {
+          "type": "string"
+        },
+        "timeout": {
+          "pattern": "^([0-9]+\\.?[0-9]*|\\.[0-9]+)s$",
+          "type": "string",
+          "format": "regex"
+        },
+        "retryPolicy": {
+          "$ref": "#/definitions/yawl.RetryPolicy",
+          "additionalProperties": false
+        },
+        "token": {
+          "type": "string"
+        },
+        "sendText": {
+          "$ref": "#/definitions/yawl.YandexMessengerSendText",
+          "additionalProperties": false
+        },
+        "catch": {
+          "items": {
+            "$ref": "#/definitions/yawl.CatchRule"
+          },
+          "additionalProperties": false,
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "sendText"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Yandex Messenger"
+    },
+    "yawl.YandexMessengerSendText": {
+      "required": [
+        "text"
+      ],
+      "properties": {
+        "chatId": {
+          "type": "string"
+        },
+        "login": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "messageId": {
+          "type": "string"
+        },
+        "replyMessageId": {
+          "type": "string"
+        },
+        "disableNotification": {
+          "type": "boolean"
+        },
+        "important": {
+          "type": "boolean"
+        },
+        "disableWebPagePreview": {
+          "type": "boolean"
+        },
+        "threadId": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "required": [
+                "chatId"
+              ]
+            },
+            {
+              "required": [
+                "login"
+              ]
+            }
+          ]
+        }
+      ],
+      "title": "Yandex Messenger Send Text"
     }
   }
 }
